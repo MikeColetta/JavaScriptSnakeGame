@@ -9,6 +9,7 @@ const snakeColor = "lightgreen";
 const snakeBorder = "black";
 const foodColor = "red";
 const unitSize = 25;
+const foodEatSound = new Audio("foodEat.mp3");
 let running = false;
 let xVelocity = unitSize;
 let yVelocity = 0;
@@ -78,6 +79,7 @@ function moveSnake() {
         score += 1;
         scoreText.textContent = score;
         createFood();
+        foodEatSound.play();
     }
     else {
         snake.pop()
