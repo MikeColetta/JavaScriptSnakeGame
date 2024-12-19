@@ -2,20 +2,21 @@ const gameBoard = document.querySelector("#gameBoard");
 const ctx = gameBoard.getContext("2d");
 const scoreText = document.querySelector("#score");
 const resetBtn = document.querySelector("#resetBtn");
+const highScoreText = document.querySelector("#highScoreText");
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
-const boardBackground = "white";
-const snakeColor = "lightgreen";
+const boardBackground = "black";
+const snakeColor = "orange";
 const snakeBorder = "black";
-const foodColor = "red";
+const foodColor = "lightgreen";
 const unitSize = 25;
 const foodEatSound = new Audio("foodEat.mp3");
+
 let running = false;
 let xVelocity = unitSize;
 let yVelocity = 0;
 let foodX;
 let foodY;
-let score = 0;
 let snake = [
     { x: unitSize * 4, y: 0 },
     { x: unitSize * 3, y: 0 },
@@ -23,9 +24,15 @@ let snake = [
     { x: 0, y: 0 }
 ]
 
+//Score variables
+let score = 0;
+let highScore;
+
 window.addEventListener("keydown", changeDirection);
 resetBtn.addEventListener("click", resetGame);
 
+setHighScore();
+showHighScore();
 gameStart();
 
 function gameStart() {
@@ -76,10 +83,10 @@ function moveSnake() {
     snake.unshift(head);
     // if food is eaten    
     if (snake[0].x == foodX && snake[0].y == foodY) {
+        foodEatSound.play();
         score += 1;
         scoreText.textContent = score;
         createFood();
-        foodEatSound.play();
     }
     else {
         snake.pop()
@@ -149,20 +156,46 @@ function checkGameOver() {
 }
 function displayGameOver() {
     ctx.font = "50px MV Boli";
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.fillText("GAME OVER!", gameWidth / 2, gameHeight / 2);
     running = false;
+    checkHighScore()
+    showHighScore();
 }
 function resetGame() {
-    score = 0;
     xVelocity = unitSize;
     yVelocity = 0;
+    score = 0;
     snake = [
         { x: unitSize * 4, y: 0 },
         { x: unitSize * 3, y: 0 },
         { x: unitSize * 2, y: 0 },
         { x: 0, y: 0 }
     ];
+
     gameStart();
+}
+
+function showHighScore() {
+    highScoreText.textContent = parseInt(localStorage.getItem("highScore"));
+}
+
+function setHighScore() {
+
+    console.log((localStorage.getItem("highScore")));
+
+    if (localStorage.getItem("highScore") !== null) {
+        highScore = parseInt(localStorage.getItem("highScore"));
+    }
+    else
+        localStorage.setItem("highScore", 0);
+}
+
+function checkHighScore() {
+    if (score > parseInt(localStorage.getItem("highScore"))) {
+        localStorage.setItem("highScore", score);
+    }
+    else
+        console.log(parseInt(localStorage.getItem("highScore")))
 }
